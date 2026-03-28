@@ -1,0 +1,41 @@
+<mujoco model="aic_cable_insertion">
+    <compiler angle="radian" meshdir="meshes/"/>
+    <option timestep="0.002" gravity="0 0 -9.81"/>
+
+    <asset>
+        <mesh name="server_tray" file="server_tray.stl"/>
+    </asset>
+
+    <worldbody>
+        <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+        <geom type="plane" size="1 1 0.1" rgba="0.9 0.9 0.9 1"/>
+
+        <body name="task_board" pos="0.5 0 0.1">
+            <geom type="mesh" mesh="server_tray" class="collision"/>
+            <site name="socket_center" pos="0 0 0.05" size="0.01" rgba="0 1 0 1"/>
+        </body>
+
+        <body name="ur5e_base" pos="0 0 0">
+            <body name="wrist_3_link" pos="0 0 0.1">
+                <site name="axia80_sensor" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+                
+                <body name="gripper" pos="0 0 0.05">
+                    <composite type="rope" count="20 1 1" spacing="0.02" offset="0 0 0.05">
+                        <joint kind="main" damping="0.01"/>
+                        <geom type="capsule" size="0.005" rgba="0.2 0.2 0.2 1"/>
+                    </composite>
+                    <site name="cable_tip" pos="0 0 0.45" size="0.005" rgba="0 0 1 1"/>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <sensor>
+        <force name="wrist_force" site="axia80_sensor"/>
+        <torque name="wrist_torque" site="axia80_sensor"/>
+    </sensor>
+
+    <actuator>
+        <motor name="shoulder_pan" joint="shoulder_pan_joint" ctrlrange="-150 150"/>
+        </actuator>
+</mujoco>
